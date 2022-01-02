@@ -85,6 +85,13 @@ class M3U8Scraper:
             file.write(link + "\n")
         file.close()
     
+    def print_to_terminal(self, links):
+        if(len(links) == 0):
+            print(f"{bcolors.FAIL}Will not print links to terminal as no links were found{bcolors.ENDC}")
+            return
+        for link in links:
+            print(link)
+    
     # Use ffmpeg to download all .m3u8 files
     def download_files(self, links):
         if(len(links) == 0):
@@ -118,6 +125,7 @@ if __name__ == '__main__':
         driver.close()
         driver.quit()
         if(len(links) > 0):
+            scraper.print_to_terminal(links)
             scraper.download_files(links)
         print(f"{bcolors.OKBLUE}Done...{bcolors.ENDC}")
     except InvalidArgumentException:
