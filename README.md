@@ -1,7 +1,7 @@
 # M3U8-Scraper
 Python web scraper for downloading **M3U8** files designed with **Selenium** and **FFMPEG**. 
 <br>
-Visit the [wiki](https://github.com/cody-k/M3U8-Scraper/wiki) for more information!
+Visit the [wiki](https://github.com/cody-k/M3U8-Scraper/wiki) for more detailed information!
 
 <br> 
 
