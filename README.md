@@ -8,6 +8,8 @@ If requested I will add functionality to import lists of links from a text file,
 <br> The variables in the image below allow you to specifiy locations of where your chromedriver[^1] is, where you would like your files to be downloaded to, and what url you will be scraping.  <br> <br>
 ![variables that need to be altered](https://i.imgur.com/GmF5Tem.png)
 
+This program assumes FFMPEG is already installed, however if it is not I have included a working version to go along with this web scraper.
+
 # Notes
 If you find any bugs that need to be fixed, feel free to contact me, fork this repository to improve it or make a pull request.
 <br> <br>
