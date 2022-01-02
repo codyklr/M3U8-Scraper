@@ -13,6 +13,6 @@ If you find any bugs that need to be fixed, feel free to contact me, fork this r
 <br> <br>
 Originally requested by `u/zackcase1`[^2]
 
-[^1]: This is only important if you have a custom location, otherwise chromedriver will be included in this repo. If the version is incorrect you may have to download the correct version via https://chromedriver.chromium.org/downloads
+[^1]: I have already included chromedriver versions 96 and 97 in this repo, this is only important if you have a custom location. If the version is incorrect you may have to download the correct version via https://chromedriver.chromium.org/downloads
 [^2]: https://www.reddit.com/r/programmingrequests/comments/ru0is0/15_help_me_with_a_scraping_project/
 
