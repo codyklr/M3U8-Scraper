@@ -6,14 +6,17 @@
     @Links: http://www.github.com/cody-k
 """
 
-
+import json
+from time import sleep
 from selenium import webdriver
+from seleniumwire import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 import os
 
@@ -36,9 +39,16 @@ class bcolors:
 options = Options()
 options.add_argument('--headless')
 options.add_argument("--disable-web-security")
+options.add_argument("--allow-running-insecure-content")
+options.add_argument("--enable-logging")
+options.add_argument("--log-level=3")
+
+capabilities = DesiredCapabilities.CHROME
+capabilities['goog:loggingPrefs'] = { 'performance':'ALL' }
 
 service = Service(DRIVER_PATH)
-driver = webdriver.Chrome(service=service, options=options)
+driver = webdriver.Chrome(service=service, options=options, desired_capabilities=capabilities)
+
 
 class M3U8Scraper:
     def __init__(self, url):
@@ -48,7 +58,14 @@ class M3U8Scraper:
 
     # Scrape all .m3u8 links from the page
     def get_m3u8_links(self):
+        print(f"{bcolors.OKGREEN}Getting responses from page...{bcolors.ENDC}")
         links = []
+        driver.find_element(by=By.CLASS_NAME, value="link-player-action").click()
+        sleep(2) # gives time for page to load and for requests to come in
+        for request in driver.requests:
+            if(request.url.find("m3u8") != -1):
+                links.append(request.url)
+
         for link in self.driver.find_elements(by=By.TAG_NAME, value='a'):
             if link.get_attribute('href') != None:
                 if link.get_attribute('href').find(".m3u8") != -1:
@@ -89,6 +106,8 @@ class M3U8Scraper:
                     count += 1
                 os.system("ffmpeg -i " + link + " -codec copy " + OUTPUT_FOLDER_NAME + "/" + fileName + "(" + str(count) + ").mp4")
             os.system("cd ..")
+    
+
 
 
 
