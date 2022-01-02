@@ -2,7 +2,7 @@
     @Author: Cody Keller
     @Date: 01/01/2022
     @Description: Python web-scraping tool for downloading M3U8 files
-    @Version: 1.0.0
+    @Version: 1.2.0
     @Links: http://www.github.com/cody-k
 """
 
