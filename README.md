@@ -11,7 +11,7 @@ If requested I will add functionality to import lists of links from a text file,
 This program assumes FFMPEG is already installed, however if it is not I have included a working version to go along with this web scraper.
 
 # Notes
-If you find any bugs that need to be fixed, feel free to contact me, fork this repository to improve it or make a pull request.
+If you find any bugs that need to be fixed, feel free to contact me, fork this repository to improve it, or make a pull request.
 <br> <br>
 Originally requested by `u/zackcase1`[^2]
 
