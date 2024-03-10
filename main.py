@@ -16,14 +16,12 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import InvalidArgumentException
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 import os
 
 # IMPORTANT VARS:
-DRIVER_PATH = "./chromedriver96"
 OUTPUT_FOLDER_NAME = "downloadedFiles"
-URL_TO_SCRAPE = "YOUR_URL_HERE"
+URL_TO_SCRAPE = "https://hentaiz.vc/natsu-ga-owaru-made-the-animation-2.html"
 
 class bcolors:
     HEADER = '\033[95m'
@@ -37,17 +35,21 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 options = Options()
-options.add_argument('--headless')
+cloud_options = {}
+cloud_options['goog:loggingPrefs'] = {'performance':'ALL'}
+#cloud_options['name'] = "test_abc"
+options.set_capability('cloud:options', cloud_options)
+
+#options.add_argument('--headless')
 options.add_argument("--disable-web-security")
 options.add_argument("--allow-running-insecure-content")
 options.add_argument("--enable-logging")
 options.add_argument("--log-level=3")
 
-capabilities = DesiredCapabilities.CHROME
-capabilities['goog:loggingPrefs'] = { 'performance':'ALL' }
 
-service = Service(DRIVER_PATH)
-driver = webdriver.Chrome(service=service, options=options, desired_capabilities=capabilities)
+
+
+driver = webdriver.Edge(options=options)
 
 
 class M3U8Scraper:
@@ -60,11 +62,12 @@ class M3U8Scraper:
     def get_m3u8_links(self):
         print(f"{bcolors.OKGREEN}Getting responses from page...{bcolors.ENDC}")
         links = []
-        driver.find_element(by=By.CLASS_NAME, value="link-player-action").click()
-        sleep(2) # gives time for page to load and for requests to come in
+        #driver.find_element(by=By.CLASS_NAME, value="link-player-action").click()
+        sleep(5) # gives time for page to load and for requests to come in
         for request in driver.requests:
             if(request.url.find("m3u8") != -1):
-                links.append(request.url)
+                if (request.url.find("m3u8&") == -1):
+                    links.append(request.url)
 
         for link in self.driver.find_elements(by=By.TAG_NAME, value='a'):
             if link.get_attribute('href') != None:
@@ -91,30 +94,30 @@ class M3U8Scraper:
             return
         for link in links:
             print(link)
-    
-    # Use ffmpeg to download all .m3u8 files
-    def download_files(self, links):
+            
+    #ffmpeg is old, use hlsdl instead
+    def download_files(self,links):
         if(len(links) == 0):
             print(f"{bcolors.FAIL}Will not download files as no links were found{bcolors.ENDC}")
-            return
+            return         
         for link in links:
             fileName = link.split("/")[-1].split(".")[0]
             if not os.path.exists(OUTPUT_FOLDER_NAME):
                 os.makedirs(OUTPUT_FOLDER_NAME)
-            os.system("cd" + OUTPUT_FOLDER_NAME)
+            os.system("cd " + OUTPUT_FOLDER_NAME)
 
             if not os.path.isfile(OUTPUT_FOLDER_NAME + "/" + fileName + ".mp4"):
-                os.system("ffmpeg -i " + link + " -codec copy " + OUTPUT_FOLDER_NAME + "/" + fileName + ".mp4")
+                os.system(f"start /wait cmd /k hlsdl -b -f -o {OUTPUT_FOLDER_NAME}/{fileName}.mp4 {link}")
+                #os.system("ffmpeg -i " + link + " -codec copy " + OUTPUT_FOLDER_NAME + "/" + fileName + ".mp4")
             else:
                 print(f"{bcolors.WARNING}File already exists: {fileName}.mp4{bcolors.ENDC}")
                 print(f"{bcolors.WARNING}Adding number to filename and continuing...{bcolors.ENDC}")
                 count = 1
                 while os.path.isfile(OUTPUT_FOLDER_NAME + "/" + fileName + "(" + str(count) + ")" + ".mp4"):
                     count += 1
-                os.system("ffmpeg -i " + link + " -codec copy " + OUTPUT_FOLDER_NAME + "/" + fileName + "(" + str(count) + ").mp4")
+                os.system(f"start /wait cmd /k hlsdl -b -f -o {OUTPUT_FOLDER_NAME}/{fileName}({str(count)}).mp4 {link}")
+                
             os.system("cd ..")
-    
-
 
 
 
@@ -126,6 +129,7 @@ if __name__ == '__main__':
         driver.quit()
         if(len(links) > 0):
             scraper.print_to_terminal(links)
+            scraper.write_to_file(links)
             scraper.download_files(links)
         print(f"{bcolors.OKBLUE}Done...{bcolors.ENDC}")
     except InvalidArgumentException:
